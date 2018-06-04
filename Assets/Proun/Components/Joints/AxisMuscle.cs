@@ -23,22 +23,23 @@ public class AxisMuscle : MonoBehaviour {
 		this.contractedLength = 0.0f;
 		this.extensionDistance = Utility.genFloat () + 0.5f;
 		this.contractTime = Utility.genFloat ();
+		this.movementAxis = Utility.genAxis ();
 	}
 
-	private void UseGene(ProunGenome.MuscleGene gene) {
+	private void UseGene(MuscleGene gene) {
 		this.heartBeat = gene.heartBeat;
 		this.contractTime = gene.contractTime;
 		this.contractedLength = gene.contractedLength;
 		this.extensionDistance = gene.extensionDistance;
+		this.movementAxis = gene.axis;
 	}
 
-	public void Spawn (ProunGenome.MuscleGene gene) {
-		this.UseGene (gene);
-		this.Spawn ();
-	}
-
-	public void Spawn (Object obj) {
-		this.RandomizeParams ();
+	public void Spawn (MuscleGene gene) {
+		if (gene != null) {
+			this.UseGene (gene);
+		} else {
+			this.RandomizeParams ();
+		}
 		this.Spawn ();
 	}
 

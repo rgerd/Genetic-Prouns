@@ -2,14 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class TESTRunner : MonoBehaviour {
-	public bool failHard;
 	public bool verbose;
 
 	void Start () {
-		if (failHard && !AdjacencyMatrix.TEST (failHard, verbose)) {
-			throw new UnityException ("AdjacencyMatrix TEST passed.");
-		}
+		Utility.TEST (verbose);
+		AdjacencyMatrix.TEST (verbose);
 	}
 }

@@ -13,23 +13,15 @@ public class ProunBuilder : MonoBehaviour {
 
 	void Start () {
 		lifetime = 0;
-		ProunGenome.NodeGene[] genome = this.getGenome();
-		int numNodes = genome.Length;
+		Gene[] genes = this.GetGenes ();
+		int numNodes = this.GetNumNodes ();
 
 		nodes = new Rigidbody[numNodes];
-		foreach(ProunGenome.NodeGene nodeGene in genome) {
-			int index = nodeGene.index;
-			int x = index % 5;
-			int y = index / 5;
-			nodes [index] = buildNode (nodeGene, Vector3.forward * x * 1.5f + Vector3.left * y * 1.5f + Vector3.up * 10 + Vector3.up * Utility.genFloat ());
-			nodes[index].gameObject.name = "NODE_" + index;
-		}
-			
-		foreach (ProunGenome.NodeGene nodeGene in genome) {
-			foreach (ProunGenome.MuscleGene muscleGene in nodeGene.muscles) {
-				Rigidbody srcNode = nodes [nodeGene.index];
-				Rigidbody destNode = nodes [muscleGene.connectedNode];
-				connectNodes (muscleGene, srcNode, destNode);
+		foreach (Gene gene in genes) {
+			if (gene is NodeGene) {
+				BuildNode ((NodeGene) gene);
+			} else if(gene is MuscleGene) {
+				BuildMuscle ((MuscleGene) gene);
 			}
 		}
 	}
@@ -37,8 +29,18 @@ public class ProunBuilder : MonoBehaviour {
 	/*
 	 * Nothing super fancy here. Just takes the parameters from the gene and applies them to the node object.
 	 */
-	Rigidbody buildNode(ProunGenome.NodeGene gene, Vector3 position) {
+	private void BuildNode(NodeGene gene) {
+		int index = gene.index;
+		int x = index % 5;
+		int y = index / 5;
+		Vector3 position = 
+			Vector3.forward * x * 1.5f +
+			Vector3.left * y * 1.5f +
+			Vector3.up * 10 + Vector3.up * Utility.genFloat ();
+
 		Rigidbody newNode = Instantiate<Rigidbody> (ProunGenome.nodeBodies[gene.body_type], gameObject.transform);
+		newNode.gameObject.name = "NODE_" + index;
+
 		newNode.transform.localPosition = position;
 
 		Vector3 scale = newNode.transform.localScale;
@@ -58,39 +60,26 @@ public class ProunBuilder : MonoBehaviour {
 		newNode.mass = gene.mass;
 		newNode.collisionDetectionMode = CollisionDetectionMode.Discrete;
 
-		return newNode;
+		nodes [gene.index] = newNode;
 	}
 
 	/*
 	 * Same thing here. Builds the right joint connecting two nodes and applies the gene parameters.
 	 */
-	void connectNodes(ProunGenome.MuscleGene gene, Rigidbody node1, Rigidbody node2) {
+	private void BuildMuscle(MuscleGene gene) {
+		Rigidbody node1 = nodes[gene.originNode];
+		Rigidbody node2 = nodes [gene.connectedNode];
+
 		switch (gene.jointType) {
-		case ProunGenome.JointType.FIXED_JOINT:
+		case Gene.JointType.FIXED_JOINT:
 			// node1.transform.position = node2.transform.position;
 			FixedJoint fixedJoint = node1.gameObject.AddComponent<FixedJoint> ();
 			fixedJoint.connectedBody = node2;
 			break;
-		case ProunGenome.JointType.SPRING_JOINT:
+		case Gene.JointType.SPRING_JOINT:
 			AxisMuscle muscle = node1.gameObject.AddComponent<AxisMuscle> ();
 			muscle.connectedBody = node2;
-			int sign;
-			switch (Utility.genInt (3)) {
-			case 0:
-				sign = node1.transform.position.x - node2.transform.position.x < 0 ? -1 : 1;
-				muscle.movementAxis = Vector3.left * sign;
-				break;
-			case 1:
-				sign = node1.transform.position.y - node2.transform.position.y < 0 ? -1 : 1;
-				muscle.movementAxis = Vector3.up * sign;
-				break;
-			case 2:
-				sign = node1.transform.position.z - node2.transform.position.z < 0 ? -1 : 1;
-				muscle.movementAxis = Vector3.forward * sign;
-				break;	
-			}
-			node2.transform.position = node1.transform.position + muscle.movementAxis * 0.5f;
-
+			node2.transform.position = (node1.transform.position + gene.axis);
 			muscle.Spawn (gene);
 			break;
 		}
@@ -100,16 +89,12 @@ public class ProunBuilder : MonoBehaviour {
 		lifetime++;
 	}
 
-	public ProunGenome.NodeGene[] getGenome() {
-		return gameObject.GetComponent<ProunGenome> ().getGenome ();
+	private Gene[] GetGenes() {
+		return gameObject.GetComponent<ProunGenome> ().GetGenes ();
 	}
 
-	public string getGenomeString() {
-		return gameObject.GetComponent<ProunGenome> ().getGenomeString ();
-	}
-
-	public ProunGenome.NodeGene[] spliceGenome(int geneIndex) {
-		return gameObject.GetComponent<ProunGenome> ().spliceGenome (geneIndex);
+	private int GetNumNodes() {
+		return gameObject.GetComponent<ProunGenome> ().GetNumNodes ();
 	}
 
 	public float getFitness() {

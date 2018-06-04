@@ -1,8 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 public class Utility {
+	public static int min(int a, int b) { return a < b ? a : b; }
+	public static int max(int a, int b) { return a > b ? a : b; }
+
+	public static Vector3 genAxis() {
+		Vector3[] possible = {
+			Vector3.up,
+			Vector3.down,
+			Vector3.left,
+			Vector3.right,
+			Vector3.forward,
+			Vector3.back,
+		};
+		return possible [genInt (possible.Length)];
+	}
+
 	public static Vector3 genVector3(float scale) {
 		return new Vector3 (Random.value * scale, Random.value * 10 + 1, Random.value * scale);
 	}
@@ -102,7 +118,7 @@ public class Utility {
 	/**
 	 * Returns true iff Utility.quickSort is working
 	 **/
-	public static bool testQuickSort() {
+	private static bool testQuickSort() {
 		string[] elems = {
 			"world",
 			"friends",
@@ -129,7 +145,10 @@ public class Utility {
 			&& sorted[4] == "you" //
 			&& sorted[5] == "friends"; //
 	}
-
-	public static int min(int a, int b) { return a < b ? a : b; }
-	public static int max(int a, int b) { return a > b ? a : b; }
+		
+	public static bool TEST(bool verbose) {
+		Assert.IsTrue (testQuickSort (), "QuickSort test failed.");		
+		Debug.Log ("[√] Utility TEST passed.");
+		return true;
+	}
 }
