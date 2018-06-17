@@ -8,10 +8,11 @@ public class AxisMuscle : MonoBehaviour {
 	public Vector3 movementAxis;
 
 	private ConfigurableJoint joint;
-	private float heartBeat;
-	private float contractTime;
-	private float contractedLength;
-	private float extensionDistance;
+	// Made public only so editor can see
+	public float heartBeat;
+	public float contractTime;
+	public float contractedLength;
+	public float extensionDistance;
 
 	void Start () {
 		if (this.spawnAutomatically)
@@ -74,7 +75,10 @@ public class AxisMuscle : MonoBehaviour {
 			this.joint.zDrive = ConfigureAxisDrive(this.joint.zDrive);
 		}
 
+		// this.joint.projectionMode = JointProjectionMode.PositionAndRotation;
+
 		this.joint.enablePreprocessing = false;
+		this.joint.enableCollision = false;
 	}
 
 	JointDrive InitAxisDrive(JointDrive drive) {

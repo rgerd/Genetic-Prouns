@@ -79,7 +79,7 @@ public class ProunBuilder : MonoBehaviour {
 		case Gene.JointType.SPRING_JOINT:
 			AxisMuscle muscle = node1.gameObject.AddComponent<AxisMuscle> ();
 			muscle.connectedBody = node2;
-			node2.transform.position = (node1.transform.position + gene.axis);
+			node2.transform.position = (node1.transform.position + gene.axis * 2);
 			muscle.Spawn (gene);
 			break;
 		}

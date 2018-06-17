@@ -9,8 +9,10 @@ using UnityEngine;
 // Connection = (push, pull, timing, connecting node) => lower always connects to higher
 
 public class ProunGenome : MonoBehaviour {
+	/* Public variables */
 	public int maxProunSize = 100;
 
+	/* Public assets */
 	public Rigidbody[] _nodeBodies;
 	public static Rigidbody[] nodeBodies;
 
@@ -20,6 +22,7 @@ public class ProunGenome : MonoBehaviour {
 	public Material[] _materials;
 	public static Material[] materials;
 
+	/* Object variables */
 	public bool spawnAutomatically = false;
 	private bool spawned = false;
 
@@ -43,9 +46,21 @@ public class ProunGenome : MonoBehaviour {
 			body [i] = new NodeGene (i);
 		mind = new AdjacencyMatrix<MuscleGene> (size);
 		for (int i = 0; i < size; i++) {
-			for (int j = i + 1; j < size; j++) {
-				if (Utility.genFloat () < 0.8) {
-					mind.SetNeighbor (i, j, new MuscleGene (i, j));
+			int numPotentialNeighbors = size - (i + 1);
+			List<int> randNeighbors = new List<int> (numPotentialNeighbors);
+			for (int j = 0; j < numPotentialNeighbors; j++)
+				randNeighbors.Add(j + i + 1);
+
+			int numNeighbors = 0;
+			while (randNeighbors.Count > 0 && numNeighbors < 3) {
+				if (Utility.genFloat () < (3f - numNeighbors) / 3f) {
+					int randIndex = Utility.genInt (randNeighbors.Count);
+					int neighbor = randNeighbors [randIndex];
+					randNeighbors.RemoveAt (randIndex);
+					mind.SetNeighbor (i, neighbor, new MuscleGene (i, neighbor));
+					numNeighbors++;
+				} else {
+					break;
 				}
 			}
 		}
@@ -82,6 +97,51 @@ public class ProunGenome : MonoBehaviour {
 		this.body = src.body;
 		this.mind = src.mind;
 		empty = false;
+	}
+
+
+	/* p2 fitness > p1fitness */
+	public void SetParents(ProunGenome p1, ProunGenome p2) {
+		// Size doesn't matter
+		int p1Size = p1.body.Length;
+		int p2Size = p2.body.Length;
+
+		int smallerSize = p2Size > p1Size ? p1Size : p2Size;
+		int largerSize  = p1Size > p2Size ? p1Size : p2Size;
+
+		NodeGene[] smallerBody = p2Size > p1Size ? p1.body : p2.body;
+		NodeGene[] largerBody  = p1Size > p2Size ? p1.body : p2.body;
+
+		int newSize = 0;
+
+		NodeGene[] _newBody = new NodeGene[largerSize];
+
+		for (int i = 0; i < smallerBody.Length; i++, newSize++)
+			_newBody [i] = Utility.genFloat () < 0.5 ? smallerBody [i] : largerBody [i];
+
+		if (p2Size > p1Size) {
+			for (int i = smallerBody.Length; i < largerBody.Length; i++, newSize++)
+				_newBody [i] = largerBody [i];
+		}
+
+		NodeGene[] newBody = new NodeGene[newSize];
+		for (int i = 0; i < newSize; i++) {
+			newBody [i] = _newBody [i];
+			newBody [i].index = i;
+		}
+
+
+		AdjacencyMatrix<MuscleGene> newMind = new AdjacencyMatrix<MuscleGene> (newSize);
+		for (int i = 0; i < p2Size; i++) {
+			for (int j = 0; j < p2Size; j++) {
+				newMind.SetNeighbor (i, j, p2.mind.GetNeighbor (i, j));
+			}
+		}
+
+		this.body = newBody;
+		this.mind = newMind;
+
+		print ("Size = " + newSize);
 	}
 //
 //	/*

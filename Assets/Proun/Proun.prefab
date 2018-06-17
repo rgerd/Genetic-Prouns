@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4464423536586300}
   - component: {fileID: 114633496918190204}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Proun
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -63,5 +63,3 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 7a900c0d51c7b4d00a775a29f051134d, type: 2}
   - {fileID: 2100000, guid: 654e36dcccdc24509aeb56db85acce00, type: 2}
   spawnAutomatically: 0
-  maxMuscleCrossover: 5
-  mutationVolatility: 0.1

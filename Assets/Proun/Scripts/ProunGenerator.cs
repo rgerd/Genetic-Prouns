@@ -170,12 +170,12 @@ public class ProunGenerator : MonoBehaviour {
 
 		int genomeIndex = 0;
 		alive += DoElitism (lastGenFitness, ref genomeIndex);
-		alive += DoMating (lastGenFitness, ref genomeIndex);
+		alive += DoMating (lastGenFitness, lastGenomes, ref genomeIndex);
 
 		generating = false; // Unlock the update loop
 	}
 
-	private int DoElitism(float[] lastGenFitness, ref int genomeIndex) {
+	private int DoElitism(float[] lastGenFitnes, ref int genomeIndex) {
 		int[] topGenomeIndices = SelectTopGenomes (lastGenFitness, elitism);
 		for (int i = 0; i < elitism; i++) {
 			int srcIndex = topGenomeIndices [i];
@@ -188,19 +188,30 @@ public class ProunGenerator : MonoBehaviour {
 		return elitism;
 	}
 
-	private int DoMating(float[] lastGenFitness, ref int genomeIndex) {
-//		for (; genomeIndex < prounsPerGeneration; genomeIndex++) {
-//			int suitorIndex = ShotgunSelect (lastGenFitness, 3);
-//
-//			int mateIndex;
-//			do { mateIndex = ShotgunSelect(lastGenFitness, 3); } while (mateIndex == suitorIndex);
-//
-//			ProunGenome suitor = lastGenomes [suitorIndex];
-//			ProunGenome mate = lastGenomes[mateIndex];
-//
-//			int suitorLength = suitor.getGenome ().Length;
-//			int mateLength	 = mate.getGenome ().Length;
-//
+	private int DoMating(float[] lastGenFitness, ProunGenome[] lastGenomes, ref int genomeIndex) {
+		int contribution = 0;
+
+		for (; genomeIndex < prounsPerGeneration; genomeIndex++, contribution++) {
+			int suitorIndex = ShotgunSelect (lastGenFitness, 3);
+
+			int mateIndex;
+			do { mateIndex = ShotgunSelect (lastGenFitness, 3); } while (mateIndex == suitorIndex);
+
+			bool suitorBetter = lastGenFitness [suitorIndex] > lastGenFitness [mateIndex];
+
+			ProunGenome worse  = suitorBetter ? lastGenomes [mateIndex]   : lastGenomes [suitorIndex];
+			ProunGenome better = suitorBetter ? lastGenomes [suitorIndex] : lastGenomes [mateIndex];
+
+			ProunGenome child = GenGenome (genomeIndex);
+			child.SetParents (worse, better);
+			// Is it hot in here or is it just me?
+		}
+		// Note that we don't spawn the genomes just yet. They need to fully initialize (kind of like gestation!),
+		// so we initialize them in the update loop when they're ready.
+		return contribution;
+	}
+}
+
 //			// Doing single-point crossover by splicing between 0.25 and 0.75 of the genome's length.
 //			int suitorSplice = Utility.genInt (suitorLength >> 1) + (suitorLength >> 3);
 //			int mateSplice	 = Utility.genInt (mateLength >> 1) + (mateLength >> 3);
@@ -218,11 +229,3 @@ public class ProunGenerator : MonoBehaviour {
 //			int child2Index = ++genomeIndex;
 //			ProunGenome child2 = GenGenome (child2Index);
 //			child2.setParents (splicedSuitor, suitorSplice, splicedMate, -mateSplice);
-//
-//			// Is it hot in here or is it just me?
-//		}
-//		// Note that we don't spawn the genomes just yet. They need to fully initialize (kind of like gestation!),
-//		// so we initialize them in the update loop when they're ready.
-		return 0;
-	}
-}

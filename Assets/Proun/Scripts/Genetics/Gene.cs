@@ -63,7 +63,7 @@ public class NodeGene : Gene {
 		mass = Utility.genFloat(0.3f, 0.9f);
 		d_friction = Utility.genFloat(0.2f, 0.8f);
 		s_friction = Utility.genFloat(0.2f, 0.8f);
-		scale = new Vector3(Utility.genFloat(), Utility.genFloat(), Utility.genFloat()) * 5; 
+		scale = new Vector3(Utility.genFloat() + 0.5f, Utility.genFloat() + 0.5f, Utility.genFloat() + 0.5f) * 6; 
 		material = Utility.genInt(3);
 	}
 

@@ -1709,6 +1709,10 @@ MonoBehaviour:
   spawnAutomatically: 1
   connectedBody: {fileID: 1182967388}
   movementAxis: {x: 1, y: 0, z: 0}
+  heartBeat: 0
+  contractTime: 0
+  contractedLength: 0
+  extensionDistance: 0
 --- !u!54 &451170530
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1786,6 +1790,10 @@ MonoBehaviour:
   spawnAutomatically: 1
   connectedBody: {fileID: 2065643054}
   movementAxis: {x: 0, y: 1, z: 0}
+  heartBeat: 0
+  contractTime: 0
+  contractedLength: 0
+  extensionDistance: 0
 --- !u!23 &461079224
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2015,6 +2023,10 @@ MonoBehaviour:
   spawnAutomatically: 1
   connectedBody: {fileID: 1852202535}
   movementAxis: {x: 0, y: 0, z: -1}
+  heartBeat: 0
+  contractTime: 0
+  contractedLength: 0
+  extensionDistance: 0
 --- !u!54 &476804683
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2128,7 +2140,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4464423536586300, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4464423536586300, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
       propertyPath: m_LocalPosition.z
@@ -2158,10 +2170,6 @@ Prefab:
         type: 2}
       propertyPath: spawnAutomatically
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1387299519298240, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
@@ -2448,6 +2456,10 @@ MonoBehaviour:
   spawnAutomatically: 1
   connectedBody: {fileID: 2047486556}
   movementAxis: {x: 0, y: 0, z: -1}
+  heartBeat: 0
+  contractTime: 0
+  contractedLength: 0
+  extensionDistance: 0
 --- !u!54 &614605798
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2811,7 +2823,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4464423536586300, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4464423536586300, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
       propertyPath: m_LocalPosition.z
@@ -2848,7 +2860,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1387299519298240, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
@@ -3265,6 +3277,7 @@ GameObject:
   - component: {fileID: 805719915}
   - component: {fileID: 805719914}
   - component: {fileID: 805719913}
+  - component: {fileID: 805719917}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3335,6 +3348,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 30, y: 0, z: 0}
+--- !u!114 &805719917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 805719912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3f333dc01fc34ba2a764a98ffc72ba0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementSpeed: 20
+  rotationSpeed: 90
 --- !u!1001 &806260423
 Prefab:
   m_ObjectHideFlags: 0
@@ -3935,6 +3961,10 @@ MonoBehaviour:
   spawnAutomatically: 1
   connectedBody: {fileID: 2065643054}
   movementAxis: {x: 0, y: 0, z: -1}
+  heartBeat: 0
+  contractTime: 0
+  contractedLength: 0
+  extensionDistance: 0
 --- !u!54 &890812147
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4441,6 +4471,10 @@ MonoBehaviour:
   spawnAutomatically: 1
   connectedBody: {fileID: 563910563}
   movementAxis: {x: 0, y: 1, z: 0}
+  heartBeat: 0
+  contractTime: 0
+  contractedLength: 0
+  extensionDistance: 0
 --- !u!54 &1017027179
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4536,6 +4570,10 @@ MonoBehaviour:
   spawnAutomatically: 1
   connectedBody: {fileID: 202260873}
   movementAxis: {x: -1, y: 0, z: 0}
+  heartBeat: 0
+  contractTime: 0
+  contractedLength: 0
+  extensionDistance: 0
 --- !u!114 &1017027185
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4550,6 +4588,10 @@ MonoBehaviour:
   spawnAutomatically: 1
   connectedBody: {fileID: 771808772}
   movementAxis: {x: 0, y: 0, z: 1}
+  heartBeat: 0
+  contractTime: 0
+  contractedLength: 0
+  extensionDistance: 0
 --- !u!114 &1017027186
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4564,6 +4606,10 @@ MonoBehaviour:
   spawnAutomatically: 1
   connectedBody: {fileID: 1104442204}
   movementAxis: {x: 0, y: -1, z: 0}
+  heartBeat: 0
+  contractTime: 0
+  contractedLength: 0
+  extensionDistance: 0
 --- !u!54 &1019355988 stripped
 Rigidbody:
   m_PrefabParentObject: {fileID: 54464987239257494, guid: a0374cd289d754d00a89a3a1de517cd4,
@@ -4707,7 +4753,7 @@ GameObject:
   - component: {fileID: 1072658787}
   - component: {fileID: 1072658786}
   - component: {fileID: 1072658790}
-  m_Layer: 4
+  m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5094,7 +5140,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1760576800268758, guid: 1243913d7757f4ef78e14c542f32813d, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114629789632520924, guid: 1243913d7757f4ef78e14c542f32813d,
         type: 2}
@@ -5107,6 +5153,11 @@ Prefab:
       value: 
       objectReference: {fileID: 1387299519298240, guid: d81c89f88ca9e4d3a8ae677098eda166,
         type: 2}
+    - target: {fileID: 114629789632520924, guid: 1243913d7757f4ef78e14c542f32813d,
+        type: 2}
+      propertyPath: speedUp
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1243913d7757f4ef78e14c542f32813d, type: 2}
   m_IsPrefabParent: 0
@@ -5600,6 +5651,10 @@ MonoBehaviour:
   spawnAutomatically: 1
   connectedBody: {fileID: 1808569450}
   movementAxis: {x: 0, y: 1, z: 0}
+  heartBeat: 0
+  contractTime: 0
+  contractedLength: 0
+  extensionDistance: 0
 --- !u!54 &1239549243 stripped
 Rigidbody:
   m_PrefabParentObject: {fileID: 54464987239257494, guid: a0374cd289d754d00a89a3a1de517cd4,
@@ -5623,7 +5678,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4464423536586300, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4464423536586300, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
       propertyPath: m_LocalPosition.z
@@ -5660,7 +5715,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1387299519298240, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
@@ -6153,7 +6208,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4464423536586300, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4464423536586300, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
       propertyPath: m_LocalPosition.z
@@ -6190,7 +6245,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1387299519298240, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
@@ -6334,6 +6389,10 @@ MonoBehaviour:
   spawnAutomatically: 1
   connectedBody: {fileID: 2065643054}
   movementAxis: {x: -1, y: 0, z: 0}
+  heartBeat: 0
+  contractTime: 0
+  contractedLength: 0
+  extensionDistance: 0
 --- !u!54 &1478367730
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6659,6 +6718,10 @@ MonoBehaviour:
   spawnAutomatically: 1
   connectedBody: {fileID: 2047486556}
   movementAxis: {x: -1, y: 0, z: 0}
+  heartBeat: 0
+  contractTime: 0
+  contractedLength: 0
+  extensionDistance: 0
 --- !u!54 &1593209144
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -6858,6 +6921,10 @@ MonoBehaviour:
   spawnAutomatically: 1
   connectedBody: {fileID: 461079222}
   movementAxis: {x: -1, y: 0, z: 0}
+  heartBeat: 0
+  contractTime: 0
+  contractedLength: 0
+  extensionDistance: 0
 --- !u!54 &1666307926
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -7547,6 +7614,10 @@ MonoBehaviour:
   spawnAutomatically: 1
   connectedBody: {fileID: 461079222}
   movementAxis: {x: 0, y: 0, z: -1}
+  heartBeat: 0
+  contractTime: 0
+  contractedLength: 0
+  extensionDistance: 0
 --- !u!54 &1924261071
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -8050,6 +8121,10 @@ MonoBehaviour:
   spawnAutomatically: 1
   connectedBody: {fileID: 1852202535}
   movementAxis: {x: -1, y: 0, z: 0}
+  heartBeat: 0
+  contractTime: 0
+  contractedLength: 0
+  extensionDistance: 0
 --- !u!54 &1993470926
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -8316,6 +8391,10 @@ MonoBehaviour:
   spawnAutomatically: 1
   connectedBody: {fileID: 1852202535}
   movementAxis: {x: 0, y: 1, z: 0}
+  heartBeat: 0
+  contractTime: 0
+  contractedLength: 0
+  extensionDistance: 0
 --- !u!153 &2047486562
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -8459,6 +8538,10 @@ MonoBehaviour:
   spawnAutomatically: 1
   connectedBody: {fileID: 2047486556}
   movementAxis: {x: 1, y: 0, z: 0}
+  heartBeat: 0
+  contractTime: 0
+  contractedLength: 0
+  extensionDistance: 0
 --- !u!23 &2065643056
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -8594,7 +8677,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4464423536586300, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4464423536586300, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
       propertyPath: m_LocalPosition.z
@@ -8631,7 +8714,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1387299519298240, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
