@@ -8,6 +8,8 @@ public class ProunGenerator : MonoBehaviour {
 	public int prounsPerGeneration = 5;
 	public int maximumLifetime;
 	public int elitism = 2;
+	public string loadFileName;
+	public bool shouldLoadFromFile;
 
 	private ProunGenome[] currentGenomes;
 	private ProunBuilder[] currentProuns;
@@ -27,15 +29,23 @@ public class ProunGenerator : MonoBehaviour {
 		genNumber = 0;
 		alive = prounsPerGeneration;
 
-		for (int i = 0; i < prounsPerGeneration; i++) {
-			GenGenome (i, Utility.genVector3Circle (Utility.genInt(50) + 50));
+
+		if (shouldLoadFromFile) {
+			GenomeData[] genomeData = DataController.LoadProunGenomeData (loadFileName);
+			for (int i = 0; i < prounsPerGeneration; i++) {
+				GenGenome (i, genomeData [i]);
+			}
+		} else {
+			for (int i = 0; i < prounsPerGeneration; i++) {
+				GenGenome (i, Utility.genVector3Circle (Utility.genInt(50) + 50));
+			}
 		}
 	}
 
-	private Vector3 genProunPosition() {
+	private Vector3 GenProunPosition() {
 		return Utility.genVector3Circle (Utility.genInt (50) + 50);
 	}
-		
+
 	/*
 	 * Basically lays an egg with a baby Proun in it. It's like
 	 * an egg because we later need to call spawn() to 'hatch' it.
@@ -43,7 +53,17 @@ public class ProunGenerator : MonoBehaviour {
 	 * as adult Prouns.
 	 */
 	private ProunGenome GenGenome(int index) {
-		return GenGenome (index, genProunPosition ());
+		return GenGenome (index, GenProunPosition ());
+	}
+
+	private ProunGenome GenGenome(int index, GenomeData data) {
+		return GenGenome (index, data, GenProunPosition ());
+	}
+
+	private ProunGenome GenGenome(int index, GenomeData data, Vector3 position) {
+		ProunGenome newGenome = GenGenome (index, position);
+		newGenome.SetData (data);
+		return newGenome;
 	}
 		
 	private ProunGenome GenGenome(int index, Vector3 position) {
@@ -53,12 +73,12 @@ public class ProunGenerator : MonoBehaviour {
 	}
 
 	private ProunGenome PassGenome(int srcIndex, int destIndex) {
-		return PassGenome (srcIndex, destIndex, genProunPosition ());
+		return PassGenome (srcIndex, destIndex, GenProunPosition ());
 	}
 
 	private ProunGenome PassGenome(int srcIndex, int destIndex, Vector3 position) {
 		ProunGenome genome = InstantiateGenome (destIndex, position);
-		genome.cloneGenome (lastGenomes [srcIndex]);
+		genome.CloneGenome (lastGenomes [srcIndex]);
 		currentGenomes [destIndex] = genome;
 		return genome;
 	}
@@ -79,7 +99,7 @@ public class ProunGenerator : MonoBehaviour {
 	 * current Proun in the generation.
 	 */
 	private void SpawnGenome(int index) {
-		currentProuns [index] = currentGenomes [index].spawn ();
+		currentProuns [index] = currentGenomes [index].Spawn ();
 	}
 
 	void Update () {
@@ -91,7 +111,7 @@ public class ProunGenerator : MonoBehaviour {
 			if (currentGenomes [i] == null)
 				continue;
 			
-			if(!currentGenomes[i].isSpawned())
+			if(!currentGenomes[i].IsSpawned())
 				SpawnGenome (i); // Release the proun!
 			
 			ProunBuilder currentProun = currentProuns [i];
@@ -109,6 +129,11 @@ public class ProunGenerator : MonoBehaviour {
 				currentGenomes [i] = null;
 				alive--;
 			}
+		}
+
+		if (Input.GetKeyDown (KeyCode.Return)) {
+			Debug.Log ("Saving...");
+			DataController.SaveProunGenomes (currentGenomes, "ProunGenomes.json");
 		}
 
 		if (alive == 0)

@@ -7,9 +7,17 @@ using UnityEngine;
  * according to the genetic blueprint.
  */
 public class ProunBuilder : MonoBehaviour {
+	private const int JUDGEMENT_AGE = 10;
+	private const float FREAK_HEIGHT = 50f;
+	private const float FREAK_VELOCITY = 1000f;
+	private const int LIFETIME_DEAD = 100000000;
+	private const float FITNESS_NEVER_REPRODUCE = -10000000f;
+
 	private GameObject proun;
 	private Rigidbody[] nodes;
 	private int lifetime;
+	private Vector3 averagePosition;
+	private int flukes = 10;
 
 	void Start () {
 		lifetime = 0;
@@ -86,6 +94,27 @@ public class ProunBuilder : MonoBehaviour {
 	}
 		
 	void FixedUpdate () {
+		if (lifetime > JUDGEMENT_AGE) {
+			float averageVelocity = 0;
+			for (int i = 0; i < nodes.Length; i++) {
+				averageVelocity += nodes [i].velocity.sqrMagnitude;
+
+				if (nodes [i].position.y >= FREAK_HEIGHT) {
+					flukes--;
+				}
+			}
+			averageVelocity /= nodes.Length;
+
+			if (averageVelocity >= FREAK_VELOCITY) {
+				flukes--;
+			}
+		}
+
+		// We've got a freak on our hands.
+		if (flukes == 0) {
+			lifetime = LIFETIME_DEAD;
+		}
+
 		lifetime++;
 	}
 
@@ -98,6 +127,8 @@ public class ProunBuilder : MonoBehaviour {
 	}
 
 	public float getFitness() {
+		if (flukes == 0) return FITNESS_NEVER_REPRODUCE;
+
 		float totalMass = 0;
 		Vector3 totalPos = new Vector3 ();
 		foreach (Rigidbody node in nodes) {

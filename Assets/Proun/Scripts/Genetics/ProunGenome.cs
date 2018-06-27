@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Runtime.Serialization;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +15,8 @@ public class ProunGenome : MonoBehaviour {
 	public int maxProunSize = 100;
 
 	/* Public assets */
+	private static bool builderStaticsSet = false;
+
 	public Rigidbody[] _nodeBodies;
 	public static Rigidbody[] nodeBodies;
 
@@ -29,18 +33,33 @@ public class ProunGenome : MonoBehaviour {
 	private bool empty = true;
 	private NodeGene[] body;
 	private AdjacencyMatrix<MuscleGene> mind;
+		
+	public void SetData (GenomeData data) {
+		body = data.body;
+
+		mind = new AdjacencyMatrix<MuscleGene> (body.Length);
+		MuscleGene[] muscles = data.mind;
+		foreach (MuscleGene muscle in muscles) {
+			mind.SetNeighbor (muscle.originNode, muscle.connectedNode, muscle);
+		}
+
+		empty = false;
+	}
+
+	public GenomeData ToGenomeData() {
+		GenomeData data = new GenomeData ();
+		data.body = body;
+		data.mind = mind.GetContents ();
+		return data;
+	}
 
 	void Start() {
-		ProunGenome.nodeBodies = _nodeBodies;
-		ProunGenome.muscle = _muscle;
-		ProunGenome.materials = _materials;
-
 		if (spawnAutomatically)
-			spawn ();
+			Spawn ();
 	}
 
 	private void GenerateRand(int maxProunSize) {
-		int size = Utility.genInt (maxProunSize * 2);
+		int size = Utility.genInt (maxProunSize * 2) + 1;
 		body = new NodeGene[size];
 		for (int i = 0; i < size; i++)
 			body [i] = new NodeGene (i);
@@ -83,17 +102,23 @@ public class ProunGenome : MonoBehaviour {
 		return body.Length;
 	}
 
-	public bool isSpawned() {
+	public bool IsSpawned() {
 		return spawned;
 	}
 
-	public ProunBuilder spawn() {
+	public ProunBuilder Spawn() {
+		if (!ProunGenome.builderStaticsSet) {
+			ProunGenome.nodeBodies = _nodeBodies;
+			ProunGenome.muscle = _muscle;
+			ProunGenome.materials = _materials;
+		}
+
 		spawned = true;
 		if (empty) GenerateRand(maxProunSize);
 		return gameObject.AddComponent<ProunBuilder> ();
 	}
 
-	public void cloneGenome(ProunGenome src) {
+	public void CloneGenome(ProunGenome src) {
 		this.body = src.body;
 		this.mind = src.mind;
 		empty = false;
@@ -116,11 +141,11 @@ public class ProunGenome : MonoBehaviour {
 
 		NodeGene[] _newBody = new NodeGene[largerSize];
 
-		for (int i = 0; i < smallerBody.Length; i++, newSize++)
+		for (int i = 0; i < smallerSize; i++, newSize++)
 			_newBody [i] = Utility.genFloat () < 0.5 ? smallerBody [i] : largerBody [i];
 
 		if (p2Size > p1Size) {
-			for (int i = smallerBody.Length; i < largerBody.Length; i++, newSize++)
+			for (int i = smallerSize; i < largerSize; i++, newSize++)
 				_newBody [i] = largerBody [i];
 		}
 
@@ -143,6 +168,12 @@ public class ProunGenome : MonoBehaviour {
 
 		print ("Size = " + newSize);
 	}
+}
+
+
+
+
+
 //
 //	/*
 //	 * Returns a spliced version of this Proun's genome 
@@ -332,4 +363,3 @@ public class ProunGenome : MonoBehaviour {
 //		}
 //		return true;
 //	}
-}

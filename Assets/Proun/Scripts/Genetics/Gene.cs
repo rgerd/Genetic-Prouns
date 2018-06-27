@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Assertions;
+using System;
 
 public abstract class Gene {
 	public enum JointType {
@@ -13,6 +14,7 @@ public abstract class Gene {
 	abstract public int GetGIN();
 }
 
+[Serializable]
 public class MuscleGene : Gene {
 	public int originNode;
 	public int connectedNode;
@@ -48,6 +50,7 @@ public class MuscleGene : Gene {
 	}
 }
 
+[Serializable]
 public class NodeGene : Gene {
 	public int index;
 	public int body_type;

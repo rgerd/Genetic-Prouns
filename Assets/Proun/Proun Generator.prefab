@@ -21,12 +21,12 @@ GameObject:
   - component: {fileID: 4711386660671960}
   - component: {fileID: 114629789632520924}
   m_Layer: 0
-  m_Name: ProunGenerator
+  m_Name: Proun Generator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4711386660671960
 Transform:
   m_ObjectHideFlags: 1
@@ -51,6 +51,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6cbce8c2cfe34d91bd9f1d984260c7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  proun: {fileID: 1387299519298240, guid: d81c89f88ca9e4d3a8ae677098eda166, type: 2}
-  prounsPerGeneration: 20
+  prounBlueprint: {fileID: 1387299519298240, guid: d81c89f88ca9e4d3a8ae677098eda166,
+    type: 2}
+  speedUp: 1
+  prounsPerGeneration: 8
   maximumLifetime: 500
+  elitism: 2
+  loadFileName: ProunGenomes.json
+  shouldLoadFromFile: 0
