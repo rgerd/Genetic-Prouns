@@ -67,7 +67,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abc601b9c7c164e78875e84836c4a5c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxProunSize: 5
+  minProunSize: 4
+  maxProunSize: 10
   _nodeBodies:
   - {fileID: 54257482579060008, guid: a1a5390dd48e341f08c8d89e5176181b, type: 2}
   - {fileID: 54399127441517722, guid: a407d04ed9133471ca0eb5e58f84bf6a, type: 2}

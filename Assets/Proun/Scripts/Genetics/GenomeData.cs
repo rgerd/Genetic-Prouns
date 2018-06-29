@@ -16,7 +16,9 @@ public class GenomeData {
 	public static string ArrayToJson(ProunGenome[] genomes, bool prettyPrint = true) {
 		GenomeData[] data = new GenomeData[genomes.Length];
 		for (int i = 0; i < genomes.Length; i++) {
-			data [i] = genomes [i].ToGenomeData ();
+			if (genomes [i] != null) {
+				data [i] = genomes [i].ToGenomeData ();
+			}
 		}
 		return ArrayToJson (data, prettyPrint);
 	}
@@ -24,7 +26,9 @@ public class GenomeData {
 	public static string ArrayToJson(GenomeData[] genomes, bool prettyPrint = true) {
 		string[] jsonObjects = new string[genomes.Length];
 		for (int i = 0; i < genomes.Length; i++) {
-			jsonObjects [i] = genomes [i].ToJson(prettyPrint);
+			if (genomes [i] != null) {
+				jsonObjects [i] = genomes [i].ToJson (prettyPrint);
+			}
 		}
 		return "***\n" + string.Join (prettyPrint ? "\n***\n" : "***", jsonObjects) + "\n";
 	}

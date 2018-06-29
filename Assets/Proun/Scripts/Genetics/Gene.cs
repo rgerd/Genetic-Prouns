@@ -2,15 +2,40 @@
 using UnityEngine.Assertions;
 using System;
 
+[Serializable]
+public class MutationParams {
+	public MuscleGene.MutationParams muscleGeneMutationParams;
+}
+
+[Serializable]
+public struct FloatMutationSettings {
+	[Range(0.0f, 1.0f)]
+	public float probability;
+	[Range(0.0f, 1.0f)]
+	public float amount;
+}
+
+[Serializable]
+public struct FlagMutationSettings {
+	[Range(0.0f, 1.0f)]
+	public float probability;
+}
+
 public abstract class Gene {
 	public enum JointType {
-		SPRING_JOINT,
-		NUM_JOINTS, // Always keep at end, everything underneath is hidden
-		FIXED_JOINT,
-		HINGE_JOINT,
+		Spring,
+		NumJoints, // Always keep at end, everything underneath is hidden
+		Fixed,
+		Hinge,
 	};
 
-	abstract public void Mutate();
+	public enum EnableMode {
+		Enabled,
+		Limp,
+		Disabled,
+		NumEnableModes
+	}
+
 	abstract public int GetGIN();
 }
 
@@ -26,6 +51,21 @@ public class MuscleGene : Gene {
 	public float contractedLength;
 	public float extensionDistance;
 	public Vector3 axis;
+	public EnableMode enableMode;
+
+	[Serializable]
+	public struct MutationParams {
+		public FlagMutationSettings shouldMutate;
+		public FloatMutationSettings heartBeat;
+		public FloatMutationSettings contractTime;
+		public FloatMutationSettings extensionDistance;
+		public FlagMutationSettings axis;
+		public FlagMutationSettings enableMode;
+	}
+
+	private static Range<float> heartBeatRange = new Range<float>(0.5f, 2.5f);
+	private static Range<float> contractTimeRange = new Range<float>(0.25f, 0.75f);
+	private static Range<float> extensionDistanceRange = new Range<float>(0.5f, 4.5f);
 
 	public MuscleGene(int _originNode, int _connectedNode) {
 		Assert.IsTrue (_originNode < _connectedNode, "Cannot connect a muscle from " + _originNode + " to " + _connectedNode + "!");
@@ -33,16 +73,44 @@ public class MuscleGene : Gene {
 		originNode = _originNode;
 		connectedNode = _connectedNode;
 
-		heartBeat = Utility.genFloat(0.8f, 2f);
-		contractTime = Utility.genFloat(0.25f, 0.75f);
+		heartBeat = Utility.genFloat(heartBeatRange);
+		contractTime = Utility.genFloat(contractTimeRange);
 		contractedLength = 0.0f;
-		extensionDistance = Utility.genFloat(0.5f, 1.5f);
-		jointType = (JointType) Utility.genInt ((int) JointType.NUM_JOINTS);
+		extensionDistance = Utility.genFloat(extensionDistanceRange);
+		jointType = (JointType) Utility.genInt ((int) JointType.NumJoints);
 		axis = Utility.genAxis ();
+		enableMode = EnableMode.Enabled;
 	}
 
-	public override void Mutate() {
-		return;
+	public MuscleGene Enable() {
+		enableMode = EnableMode.Enabled;
+		return this;
+	}
+
+	public MuscleGene Limp() {
+		enableMode = EnableMode.Limp;
+		return this;
+	}
+
+	public MuscleGene Disable() {
+		enableMode = EnableMode.Disabled;
+		return this;
+	}
+
+	public Gene Mutate(MutationParams mutationParams) {
+		if (!Utility.flipCoin (mutationParams.shouldMutate.probability)) {
+			return this;
+		}
+
+		if (Utility.flipCoin (mutationParams.axis.probability)) {
+			this.axis = Utility.genAxis ();
+		}
+
+		if (Utility.flipCoin (mutationParams.enableMode.probability)) {
+			this.enableMode = (EnableMode)Utility.genInt ((int) EnableMode.NumEnableModes);
+		}
+
+		return this;
 	}
 
 	public override int GetGIN() {
@@ -70,8 +138,8 @@ public class NodeGene : Gene {
 		material = Utility.genInt(3);
 	}
 
-	public override void Mutate() {
-		return;
+	public Gene Mutate(MutationParams mutationParams) {
+		return this;
 	}
 
 	public override int GetGIN() {

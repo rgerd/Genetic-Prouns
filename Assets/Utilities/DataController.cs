@@ -8,13 +8,13 @@ public class DataController : MonoBehaviour {
 		// Possibly look for file and load prouns from previous run
 	}
 
-	public static void SaveProunGenome(ProunGenome genome, string dataFileName) {
-		SaveProunGenomes (new ProunGenome[] { genome }, dataFileName);
+	public static void SaveProunGenome(ProunGenome genome, string dataFileName, bool prettyPrint = true) {
+		SaveProunGenomes (new ProunGenome[] { genome }, dataFileName, prettyPrint);
 	}
 
-	public static void SaveProunGenomes(ProunGenome[] genomes, string dataFileName) {
+	public static void SaveProunGenomes(ProunGenome[] genomes, string dataFileName, bool prettyPrint = true) {
 		string filePath = Path.Combine (Application.streamingAssetsPath, dataFileName);
-		string dataAsJson = GenomeData.ArrayToJson (genomes, true);
+		string dataAsJson = GenomeData.ArrayToJson (genomes, prettyPrint);
 		if (File.Exists (filePath)) {
 			File.AppendAllText (filePath, dataAsJson);
 		} else {

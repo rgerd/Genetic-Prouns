@@ -6,10 +6,14 @@ public class ProunGenerator : MonoBehaviour {
 	public GameObject prounBlueprint;
 	public bool speedUp;
 	public int prounsPerGeneration = 5;
+	public int maximumGenerations = 0; // 0 = unlimited
 	public int maximumLifetime;
 	public int elitism = 2;
-	public string loadFileName;
+	public float saveFitnessCutoff = 1200;
+	public string saveFileName;
+	public bool shouldSaveElites;
 	public bool shouldLoadFromFile;
+	public MutationParams mutationParameters;
 
 	private ProunGenome[] currentGenomes;
 	private ProunBuilder[] currentProuns;
@@ -17,7 +21,7 @@ public class ProunGenerator : MonoBehaviour {
 	private ProunGenome[] lastGenomes;
 	private float[] lastGenFitness;
 
-	private int genNumber;
+	private int genNumber = 1;
 	private bool generating;
 	private int alive;
 
@@ -26,24 +30,27 @@ public class ProunGenerator : MonoBehaviour {
 		lastGenFitness	= new        float [prounsPerGeneration];
 		currentGenomes	= new  ProunGenome [prounsPerGeneration];
 		currentProuns	= new ProunBuilder [prounsPerGeneration];
-		genNumber = 0;
 		alive = prounsPerGeneration;
 
 
 		if (shouldLoadFromFile) {
-			GenomeData[] genomeData = DataController.LoadProunGenomeData (loadFileName);
+			GenomeData[] genomeData = DataController.LoadProunGenomeData (saveFileName);
 			for (int i = 0; i < prounsPerGeneration; i++) {
 				GenGenome (i, genomeData [i]);
 			}
 		} else {
 			for (int i = 0; i < prounsPerGeneration; i++) {
-				GenGenome (i, Utility.genVector3Circle (Utility.genInt(50) + 50));
+				GenGenome (i);
 			}
 		}
 	}
 
+	private float GenProunCircleRadius() {
+		return Utility.genInt (50) + 50;
+	}
+
 	private Vector3 GenProunPosition() {
-		return Utility.genVector3Circle (Utility.genInt (50) + 50);
+		return Utility.genVector3Circle (GenProunCircleRadius ());
 	}
 
 	/*
@@ -132,7 +139,7 @@ public class ProunGenerator : MonoBehaviour {
 		}
 
 		if (Input.GetKeyDown (KeyCode.Return)) {
-			Debug.Log ("Saving...");
+			Debug.Log ("Saving generation...");
 			DataController.SaveProunGenomes (currentGenomes, "ProunGenomes.json");
 		}
 
@@ -188,10 +195,17 @@ public class ProunGenerator : MonoBehaviour {
 	 * to create the next generation.
 	 */
 	private void NewGeneration() {
+		if (genNumber == maximumGenerations) {
+			#if UNITY_EDITOR
+			UnityEditor.EditorApplication.isPlaying = false;
+			#else
+			Application.Quit ();
+			#endif
+		}
+
 		Time.timeScale = 1;
 		generating = true;  // Lock the update loop
 		genNumber++;
-		print ("Generating generation " + genNumber);
 
 		int genomeIndex = 0;
 		alive += DoElitism (lastGenFitness, ref genomeIndex);
@@ -205,7 +219,12 @@ public class ProunGenerator : MonoBehaviour {
 		for (int i = 0; i < elitism; i++) {
 			int srcIndex = topGenomeIndices [i];
 			int destIndex = genomeIndex + i;
-			// print ("Top fitness #" + (i + 1) + ": " + lastGenFitness [srcIndex]);
+
+			float eliteFitness = lastGenFitnes [srcIndex];
+			if (shouldSaveElites && eliteFitness >= saveFitnessCutoff) {
+				DataController.SaveProunGenome (lastGenomes [srcIndex], saveFileName, false);
+			}
+
 			PassGenome (srcIndex, destIndex);
 		}
 		genomeIndex += elitism;
@@ -226,9 +245,11 @@ public class ProunGenerator : MonoBehaviour {
 
 			ProunGenome worse  = suitorBetter ? lastGenomes [mateIndex]   : lastGenomes [suitorIndex];
 			ProunGenome better = suitorBetter ? lastGenomes [suitorIndex] : lastGenomes [mateIndex];
+			float worseFitness  = suitorBetter ? lastGenFitness [mateIndex]   : lastGenFitness [suitorIndex];
+			float betterFitness = suitorBetter ? lastGenFitness [suitorIndex] : lastGenFitness [mateIndex];
 
 			ProunGenome child = GenGenome (genomeIndex);
-			child.SetParents (worse, better);
+			child.SetParents (worse, better, worseFitness, betterFitness, mutationParameters);
 			// Is it hot in here or is it just me?
 		}
 		// Note that we don't spawn the genomes just yet. They need to fully initialize (kind of like gestation!),
@@ -236,21 +257,3 @@ public class ProunGenerator : MonoBehaviour {
 		return contribution;
 	}
 }
-
-//			// Doing single-point crossover by splicing between 0.25 and 0.75 of the genome's length.
-//			int suitorSplice = Utility.genInt (suitorLength >> 1) + (suitorLength >> 3);
-//			int mateSplice	 = Utility.genInt (mateLength >> 1) + (mateLength >> 3);
-//
-//			// Splice the genomes to prepare for mating
-//			ProunGenome.NodeGene[] splicedSuitor = suitor.spliceGenome (suitorSplice);
-//			ProunGenome.NodeGene[] splicedMate	 = mate.spliceGenome (mateSplice);
-//
-//			// Mate the genomes to create two children. This allows the next generation to be as large as
-//			// the previous one.
-//			int child1Index = genomeIndex;
-//			ProunGenome child1 = GenGenome (child1Index);
-//			child1.setParents (splicedSuitor, -suitorSplice, splicedMate, mateSplice);
-//
-//			int child2Index = ++genomeIndex;
-//			ProunGenome child2 = GenGenome (child2Index);
-//			child2.setParents (splicedSuitor, suitorSplice, splicedMate, -mateSplice);

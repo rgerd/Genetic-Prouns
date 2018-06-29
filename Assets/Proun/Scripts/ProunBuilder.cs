@@ -7,7 +7,7 @@ using UnityEngine;
  * according to the genetic blueprint.
  */
 public class ProunBuilder : MonoBehaviour {
-	private const int JUDGEMENT_AGE = 10;
+	private const int JUDGEMENT_AGE = 20;
 	private const float FREAK_HEIGHT = 50f;
 	private const float FREAK_VELOCITY = 1000f;
 	private const int LIFETIME_DEAD = 100000000;
@@ -16,8 +16,9 @@ public class ProunBuilder : MonoBehaviour {
 	private GameObject proun;
 	private Rigidbody[] nodes;
 	private int lifetime;
-	private Vector3 averagePosition;
+	private Vector3 startPosition = Vector3.zero;
 	private int flukes = 10;
+	private float muscleDensity = 0;
 
 	void Start () {
 		lifetime = 0;
@@ -75,22 +76,36 @@ public class ProunBuilder : MonoBehaviour {
 	 * Same thing here. Builds the right joint connecting two nodes and applies the gene parameters.
 	 */
 	private void BuildMuscle(MuscleGene gene) {
+		if (gene.enableMode == Gene.EnableMode.Disabled)
+			return;
+
+		muscleDensity += 2f / nodes.Length;
+
 		Rigidbody node1 = nodes[gene.originNode];
 		Rigidbody node2 = nodes [gene.connectedNode];
 
 		switch (gene.jointType) {
-		case Gene.JointType.FIXED_JOINT:
+		case Gene.JointType.Fixed:
 			// node1.transform.position = node2.transform.position;
 			FixedJoint fixedJoint = node1.gameObject.AddComponent<FixedJoint> ();
 			fixedJoint.connectedBody = node2;
 			break;
-		case Gene.JointType.SPRING_JOINT:
+		case Gene.JointType.Spring:
 			AxisMuscle muscle = node1.gameObject.AddComponent<AxisMuscle> ();
 			muscle.connectedBody = node2;
 			node2.transform.position = (node1.transform.position + gene.axis * 2);
 			muscle.Spawn (gene);
 			break;
 		}
+	}
+
+	Vector3 GetPosition() {
+		Vector3 position = new Vector3 ();
+		foreach (Rigidbody node in nodes) {
+			position += node.position / nodes.Length;
+		}
+
+		return position;
 	}
 		
 	void FixedUpdate () {
@@ -108,10 +123,14 @@ public class ProunBuilder : MonoBehaviour {
 			if (averageVelocity >= FREAK_VELOCITY) {
 				flukes--;
 			}
+
+			if (startPosition == Vector3.zero) {
+				startPosition = GetPosition ();
+			}
 		}
 
 		// We've got a freak on our hands.
-		if (flukes == 0) {
+		if (flukes <= 0) {
 			lifetime = LIFETIME_DEAD;
 		}
 
@@ -127,17 +146,12 @@ public class ProunBuilder : MonoBehaviour {
 	}
 
 	public float getFitness() {
-		if (flukes == 0) return FITNESS_NEVER_REPRODUCE;
+		if (flukes <= 0) return FITNESS_NEVER_REPRODUCE;
 
-		float totalMass = 0;
-		Vector3 totalPos = new Vector3 ();
-		foreach (Rigidbody node in nodes) {
-			Vector3 lpos = node.gameObject.transform.localPosition;
-			totalPos += new Vector3(lpos.x, 0, lpos.z) * node.mass;
-			totalMass += node.mass;
-		}
-
-		return (totalPos / totalMass).magnitude;
+		Vector3 finalPosition = GetPosition ();
+		float distance = (finalPosition - startPosition).magnitude;
+		
+		return nodes.Length * 2 * flukes * (distance / 500) * muscleDensity;
 	}
 
 	public int getLifetime() {

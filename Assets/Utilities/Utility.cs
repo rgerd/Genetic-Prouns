@@ -3,6 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
 
+[System.Serializable]
+public class Range <T> {
+	public readonly T min;
+	public readonly T max;
+	public Range (T min, T max) {
+		this.min = min;
+		this.max = max;
+	}
+}
+
 public class Utility {
 	public static int min(int a, int b) { return a < b ? a : b; }
 	public static int max(int a, int b) { return a > b ? a : b; }
@@ -29,19 +39,35 @@ public class Utility {
 
 	public static Vector3 genVector3Circle(float scale) {
 		float angle = Random.value * Mathf.PI * 2;
-		return new Vector3 (Mathf.Sin (angle) * scale, Random.value * 10 + 1, Mathf.Cos (angle) * scale);
+		return new Vector3 (Mathf.Sin (angle) * scale, 2, Mathf.Cos (angle) * scale);
+	}
+
+	public static float genFloat(Range<float> r) {
+		return genFloat (r.min, r.max);
 	}
 
 	public static float genFloat(float a, float b) {
-		return (Random.value * (b - a)) + a; 
+		return (genFloat() * (b - a)) + a; 
 	}
 
 	public static float genFloat() {
 		return Random.value;
 	}
 
+	public static int genInt(Range<int> r) {
+		return genInt (r.min, r.max);
+	}
+		
+	public static int genInt(int a, int b) {
+		return genInt(b - a) + a;
+	}
+
 	public static int genInt(int size) {
 		return (int)(Random.value * size);
+	}
+
+	public static bool flipCoin(float probabilityHeads) {
+		return genFloat () <= probabilityHeads;
 	}
 
 	public static Vector3 eProd(Vector3 a, Vector3 b) {

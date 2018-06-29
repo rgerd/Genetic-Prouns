@@ -13,6 +13,7 @@ public class AxisMuscle : MonoBehaviour {
 	public float contractTime;
 	public float contractedLength;
 	public float extensionDistance;
+	public Gene.EnableMode enableMode;
 
 	void Start () {
 		if (this.spawnAutomatically)
@@ -25,6 +26,7 @@ public class AxisMuscle : MonoBehaviour {
 		this.extensionDistance = Utility.genFloat () + 0.5f;
 		this.contractTime = Utility.genFloat ();
 		this.movementAxis = Utility.genAxis ();
+		this.enableMode = (Gene.EnableMode)Utility.genInt ((int)Gene.EnableMode.NumEnableModes);
 	}
 
 	private void UseGene(MuscleGene gene) {
@@ -33,6 +35,7 @@ public class AxisMuscle : MonoBehaviour {
 		this.contractedLength = gene.contractedLength;
 		this.extensionDistance = gene.extensionDistance;
 		this.movementAxis = gene.axis;
+		this.enableMode = gene.enableMode;
 	}
 
 	public void Spawn (MuscleGene gene) {
@@ -75,8 +78,6 @@ public class AxisMuscle : MonoBehaviour {
 			this.joint.zDrive = ConfigureAxisDrive(this.joint.zDrive);
 		}
 
-		// this.joint.projectionMode = JointProjectionMode.PositionAndRotation;
-
 		this.joint.enablePreprocessing = false;
 		this.joint.enableCollision = false;
 	}
@@ -95,8 +96,12 @@ public class AxisMuscle : MonoBehaviour {
 		drive.maximumForce = 100;
 		return drive;
 	}
-
+		
 	void FixedUpdate () {
+		if (enableMode != Gene.EnableMode.Enabled) {
+			return;
+		}
+
 		Vector3 position = this.joint.targetPosition;
 		float radTime = Time.time * Mathf.PI * 2; // Time converted to radians. 1 second = 0.5, 1, 0.5, 0
 		radTime /= heartBeat;

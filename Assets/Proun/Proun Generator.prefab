@@ -26,7 +26,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4711386660671960
 Transform:
   m_ObjectHideFlags: 1
@@ -54,8 +54,26 @@ MonoBehaviour:
   prounBlueprint: {fileID: 1387299519298240, guid: d81c89f88ca9e4d3a8ae677098eda166,
     type: 2}
   speedUp: 1
-  prounsPerGeneration: 8
-  maximumLifetime: 500
-  elitism: 2
-  loadFileName: ProunGenomes.json
+  prounsPerGeneration: 10
+  maximumLifetime: 1000
+  elitism: 4
+  saveFitnessCutoff: 1200
+  saveFileName: GoodProuns.json
   shouldLoadFromFile: 0
+  mutationParameters:
+    muscleGeneMutationParams:
+      shouldMutate:
+        probability: 0.555
+      heartBeat:
+        probability: 0.832
+        amount: 0.298
+      contractTime:
+        probability: 0.842
+        amount: 0.293
+      extensionDistance:
+        probability: 0.838
+        amount: 0.32
+      axis:
+        probability: 0.723
+      enableMode:
+        probability: 0.251
