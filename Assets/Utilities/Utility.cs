@@ -4,9 +4,15 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 [System.Serializable]
-public class Range <T> {
+public class Range <T> where T : System.IConvertible {
 	public readonly T min;
 	public readonly T max;
+	public float size {
+		get {
+			return (float)(max.ToDouble (null) - min.ToDouble (null));
+		}
+	}
+
 	public Range (T min, T max) {
 		this.min = min;
 		this.max = max;
@@ -49,9 +55,18 @@ public class Utility {
 	public static float genFloat(float a, float b) {
 		return (genFloat() * (b - a)) + a; 
 	}
+		
+	public static float nudgeFloat (float value, Range<float> range, float scale) {
+		float adjustedSize = range.size * scale;
+		return clampFloat((genFloat () * adjustedSize) - (adjustedSize / 2), range);
+	}
 
 	public static float genFloat() {
 		return Random.value;
+	}
+
+	public static float clampFloat(float value, Range<float> range) {
+		return Mathf.Max (range.min, Mathf.Min (range.max, value));
 	}
 
 	public static int genInt(Range<int> r) {
@@ -173,8 +188,10 @@ public class Utility {
 	}
 		
 	public static bool TEST(bool verbose) {
-		Assert.IsTrue (testQuickSort (), "QuickSort test failed.");		
-		Debug.Log ("[√] Utility TEST passed.");
+		Assert.IsTrue (testQuickSort (), "QuickSort test failed.");
+		if (verbose) {
+			Debug.Log ("[√] Utility TEST passed.");
+		}
 		return true;
 	}
 }

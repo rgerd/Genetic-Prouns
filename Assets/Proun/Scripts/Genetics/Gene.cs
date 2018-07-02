@@ -110,6 +110,18 @@ public class MuscleGene : Gene {
 			this.enableMode = (EnableMode)Utility.genInt ((int) EnableMode.NumEnableModes);
 		}
 
+		if (Utility.flipCoin (mutationParams.heartBeat.probability)) {
+			this.heartBeat = Utility.nudgeFloat (this.heartBeat, heartBeatRange, mutationParams.heartBeat.amount);
+		}
+
+		if (Utility.flipCoin (mutationParams.contractTime.probability)) {
+			this.contractTime = Utility.nudgeFloat (this.contractTime, contractTimeRange, mutationParams.contractTime.amount);
+		}
+
+		if (Utility.flipCoin (mutationParams.extensionDistance.probability)) {
+			this.extensionDistance = Utility.nudgeFloat (this.extensionDistance, extensionDistanceRange, mutationParams.extensionDistance.amount);
+		}
+
 		return this;
 	}
 

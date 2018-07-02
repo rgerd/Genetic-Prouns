@@ -5,11 +5,15 @@ using UnityEngine;
 public class ProunGarden : MonoBehaviour {
 	public GameObject prounBlueprint;
 	public string loadFileName;
+	public int numProunsToLoad;
 
 	void Start () {
 		GenomeData[] genomeData = DataController.LoadProunGenomeData (loadFileName);
-		for (int i = 0; i < genomeData.Length; i++) {
-			InstantiateGenome (i, genomeData[i]).Spawn ();
+
+		print ("Loading " + numProunsToLoad + " / " + genomeData.Length + " prouns.");
+
+		for (int i = 0; i < numProunsToLoad; i++) {
+			InstantiateGenome (i, genomeData[Utility.genInt(genomeData.Length)]).Spawn ();
 		}
 	}
 

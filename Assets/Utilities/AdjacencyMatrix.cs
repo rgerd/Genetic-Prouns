@@ -117,7 +117,10 @@ public class AdjacencyMatrix {
 			Assert.AreEqual (expectedNeighbors [i], actualNeighbors [i], "Expected neighbor does not match actual neighbor.");
 		}
 			
-		Debug.Log ("[√] AdjacencyMatrix TEST passed.");
+		if (verbose) {
+			Debug.Log ("[√] AdjacencyMatrix TEST passed.");
+		}
+
 		return true;
 	}
 }

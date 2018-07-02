@@ -5,10 +5,13 @@ using UnityEngine;
 public class ProunGenerator : MonoBehaviour {
 	public GameObject prounBlueprint;
 	public bool speedUp;
+	public float speedUpAmount = 8;
+	public Camera camera;
 	public int prounsPerGeneration = 5;
 	public int maximumGenerations = 0; // 0 = unlimited
 	public int maximumLifetime;
 	public int elitism = 2;
+	public bool shouldLogElites;
 	public float saveFitnessCutoff = 1200;
 	public string saveFileName;
 	public bool shouldSaveElites;
@@ -25,13 +28,20 @@ public class ProunGenerator : MonoBehaviour {
 	private bool generating;
 	private int alive;
 
+	private float eliteFitnessAverage;
+
+	public static int prounMaximumLifetime;
+
 	void Start () {
+		prounMaximumLifetime = maximumLifetime;
+
 		lastGenomes		= new  ProunGenome [prounsPerGeneration];
 		lastGenFitness	= new        float [prounsPerGeneration];
 		currentGenomes	= new  ProunGenome [prounsPerGeneration];
 		currentProuns	= new ProunBuilder [prounsPerGeneration];
 		alive = prounsPerGeneration;
 
+		eliteFitnessAverage = 0;
 
 		if (shouldLoadFromFile) {
 			GenomeData[] genomeData = DataController.LoadProunGenomeData (saveFileName);
@@ -111,8 +121,10 @@ public class ProunGenerator : MonoBehaviour {
 
 	void Update () {
 		if (generating) { return; }
-		if(speedUp)
-			Time.timeScale = 8;
+		if (speedUp) {
+			Time.timeScale = speedUpAmount;
+			camera.enabled = false;
+		}
 
 		for (int i = 0; i < currentGenomes.Length; i++) {
 			if (currentGenomes [i] == null)
@@ -204,14 +216,14 @@ public class ProunGenerator : MonoBehaviour {
 		}
 
 		Time.timeScale = 1;
-		generating = true;  // Lock the update loop
+		generating = true;  // Disconnect the update loop
 		genNumber++;
 
 		int genomeIndex = 0;
 		alive += DoElitism (lastGenFitness, ref genomeIndex);
 		alive += DoMating (lastGenFitness, lastGenomes, ref genomeIndex);
 
-		generating = false; // Unlock the update loop
+		generating = false; // Reconnect the update loop
 	}
 
 	private int DoElitism(float[] lastGenFitnes, ref int genomeIndex) {
@@ -221,6 +233,15 @@ public class ProunGenerator : MonoBehaviour {
 			int destIndex = genomeIndex + i;
 
 			float eliteFitness = lastGenFitnes [srcIndex];
+
+			if (shouldLogElites) {
+				print ("Elite #" + (i + 1) + " fitness: " + eliteFitness);
+
+				if (i < 2) {
+					eliteFitnessAverage = (eliteFitnessAverage * (genNumber - 1) + eliteFitness) / genNumber;
+				}
+			}
+
 			if (shouldSaveElites && eliteFitness >= saveFitnessCutoff) {
 				DataController.SaveProunGenome (lastGenomes [srcIndex], saveFileName, false);
 			}
@@ -228,6 +249,10 @@ public class ProunGenerator : MonoBehaviour {
 			PassGenome (srcIndex, destIndex);
 		}
 		genomeIndex += elitism;
+
+		if (shouldLogElites) {
+			print ("Average top elite fitness: " + eliteFitnessAverage);
+		}
 
 		return elitism;
 	}

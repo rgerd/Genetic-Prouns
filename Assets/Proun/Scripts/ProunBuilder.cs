@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,11 +8,12 @@ using UnityEngine;
  * according to the genetic blueprint.
  */
 public class ProunBuilder : MonoBehaviour {
-	private const int JUDGEMENT_AGE = 20;
+	private const int JUDGEMENT_AGE = 200;
 	private const float FREAK_HEIGHT = 50f;
+	private const float FREAK_DEPTH = -50f;
 	private const float FREAK_VELOCITY = 1000f;
 	private const int LIFETIME_DEAD = 100000000;
-	private const float FITNESS_NEVER_REPRODUCE = -10000000f;
+	private const float FITNESS_NEVER_REPRODUCE = -1f;
 
 	private GameObject proun;
 	private Rigidbody[] nodes;
@@ -109,12 +111,17 @@ public class ProunBuilder : MonoBehaviour {
 	}
 		
 	void FixedUpdate () {
+		if (lifetime >= ProunGenerator.prounMaximumLifetime) {
+			return;
+		}
+
 		if (lifetime > JUDGEMENT_AGE) {
 			float averageVelocity = 0;
 			for (int i = 0; i < nodes.Length; i++) {
 				averageVelocity += nodes [i].velocity.sqrMagnitude;
 
-				if (nodes [i].position.y >= FREAK_HEIGHT) {
+				if (nodes [i].position.y >= FREAK_HEIGHT 
+				 || nodes [i].position.y <= FREAK_DEPTH) {
 					flukes--;
 				}
 			}
@@ -132,9 +139,9 @@ public class ProunBuilder : MonoBehaviour {
 		// We've got a freak on our hands.
 		if (flukes <= 0) {
 			lifetime = LIFETIME_DEAD;
+		} else {
+			lifetime++;
 		}
-
-		lifetime++;
 	}
 
 	private Gene[] GetGenes() {
@@ -149,9 +156,16 @@ public class ProunBuilder : MonoBehaviour {
 		if (flukes <= 0) return FITNESS_NEVER_REPRODUCE;
 
 		Vector3 finalPosition = GetPosition ();
-		float distance = (finalPosition - startPosition).magnitude;
-		
-		return nodes.Length * 2 * flukes * (distance / 500) * muscleDensity;
+		float distance = (finalPosition - startPosition).sqrMagnitude;
+
+		float sizeFitness = (float)Math.Pow (nodes.Length, 3);
+		float muscleFitness = (float)Math.Pow (muscleDensity, 3);
+		float travelFitness = (distance / lifetime) * 50;
+		float stabilityFitness = flukes / 10f;
+
+		float totalFitness = (sizeFitness * muscleFitness * travelFitness * stabilityFitness) / 1000f;
+
+		return totalFitness;
 	}
 
 	public int getLifetime() {
