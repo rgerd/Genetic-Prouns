@@ -27,9 +27,15 @@ public class ProunGenome : MonoBehaviour {
 	private bool spawned = false;
 
 	private bool empty = true;
+
+	private string genomeID;
 	private NodeGene[] body;
 	private AdjacencyMatrix<MuscleGene> mind;
-		
+
+	private static string GenerateGID() {
+		return (Utility.genUnsignedInt ()).ToString ("X");
+	}
+
 	public void SetData (GenomeData data) {
 		body = data.body;
 
@@ -44,6 +50,7 @@ public class ProunGenome : MonoBehaviour {
 
 	public GenomeData ToGenomeData() {
 		GenomeData data = new GenomeData ();
+		data.genomeID = genomeID;
 		data.body = body;
 		data.mind = mind.GetContents ();
 		return data;
@@ -117,6 +124,9 @@ public class ProunGenome : MonoBehaviour {
 
 		spawned = true;
 		if (empty) GenerateRand();
+
+		if (genomeID == null)
+			genomeID = GenerateGID ();
 		return gameObject.AddComponent<ProunBuilder> ();
 	}
 

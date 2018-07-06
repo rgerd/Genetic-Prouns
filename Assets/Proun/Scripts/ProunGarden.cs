@@ -23,7 +23,7 @@ public class ProunGarden : MonoBehaviour {
 			GenProunPosition(),
 			Quaternion.identity
 		);
-		obj.name = "GARDEN_PROUN_" + index;
+		obj.name = "GARDEN_PROUN_" + data.genomeID;
 		ProunGenome genome = obj.GetComponent<ProunGenome> ();
 		genome.SetData (data);
 		return genome;

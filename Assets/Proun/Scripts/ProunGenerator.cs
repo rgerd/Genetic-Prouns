@@ -6,7 +6,7 @@ public class ProunGenerator : MonoBehaviour {
 	public GameObject prounBlueprint;
 	public bool speedUp;
 	public float speedUpAmount = 8;
-	public Camera camera;
+	public new Camera camera;
 	public int prounsPerGeneration = 5;
 	public int maximumGenerations = 0; // 0 = unlimited
 	public int maximumLifetime;

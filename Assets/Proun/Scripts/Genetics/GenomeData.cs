@@ -6,6 +6,7 @@ using System;
 
 [Serializable]
 public class GenomeData {
+	public string genomeID;
 	public NodeGene[] body;
 	public MuscleGene[] mind;
 

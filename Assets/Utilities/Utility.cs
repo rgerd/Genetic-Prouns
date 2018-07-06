@@ -81,6 +81,10 @@ public class Utility {
 		return (int)(Random.value * size);
 	}
 
+	public static uint genUnsignedInt() {
+		return (uint)(Random.value * 0xffffffff) + 1;
+	}
+
 	public static bool flipCoin(float probabilityHeads) {
 		return genFloat () <= probabilityHeads;
 	}

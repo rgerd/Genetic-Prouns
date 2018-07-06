@@ -4229,7 +4229,7 @@ Prefab:
     - target: {fileID: 114416823519961052, guid: 88829fe15796b4479aa6ecb07d77c22a,
         type: 2}
       propertyPath: loadFileName
-      value: BetterProuns.json
+      value: NewProuns.json
       objectReference: {fileID: 0}
     - target: {fileID: 114416823519961052, guid: 88829fe15796b4479aa6ecb07d77c22a,
         type: 2}
@@ -4810,6 +4810,16 @@ Prefab:
       objectReference: {fileID: 805719915}
     - target: {fileID: 1760576800268758, guid: 1243913d7757f4ef78e14c542f32813d, type: 2}
       propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114629789632520924, guid: 1243913d7757f4ef78e14c542f32813d,
+        type: 2}
+      propertyPath: saveFileName
+      value: NewProuns.json
+      objectReference: {fileID: 0}
+    - target: {fileID: 114629789632520924, guid: 1243913d7757f4ef78e14c542f32813d,
+        type: 2}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
