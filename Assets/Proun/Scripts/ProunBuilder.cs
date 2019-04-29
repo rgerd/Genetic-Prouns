@@ -14,12 +14,13 @@ public class ProunBuilder : MonoBehaviour {
 	private const float FREAK_VELOCITY = 1000f;
 	private const int LIFETIME_DEAD = 100000000;
 	private const float FITNESS_NEVER_REPRODUCE = -1f;
+    private const int MAX_NUM_FLUKES = 10;
 
 	private GameObject proun;
 	private Rigidbody[] nodes;
 	private int lifetime;
 	private Vector3 startPosition = Vector3.zero;
-	private int flukes = 10;
+	private int flukes = 0;
 	private float muscleDensity = 0;
 
 	void Start () {
@@ -122,13 +123,13 @@ public class ProunBuilder : MonoBehaviour {
 
 				if (nodes [i].position.y >= FREAK_HEIGHT 
 				 || nodes [i].position.y <= FREAK_DEPTH) {
-					flukes--;
+					flukes++;
 				}
 			}
 			averageVelocity /= nodes.Length;
 
 			if (averageVelocity >= FREAK_VELOCITY) {
-				flukes--;
+				flukes++;
 			}
 
 			if (startPosition == Vector3.zero) {
@@ -137,7 +138,7 @@ public class ProunBuilder : MonoBehaviour {
 		}
 
 		// We've got a freak on our hands.
-		if (flukes <= 0) {
+		if (flukes >= MAX_NUM_FLUKES) {
 			lifetime = LIFETIME_DEAD;
 		} else {
 			lifetime++;
@@ -153,7 +154,7 @@ public class ProunBuilder : MonoBehaviour {
 	}
 
 	public float getFitness() {
-		if (flukes <= 0) return FITNESS_NEVER_REPRODUCE;
+		if (flukes >= MAX_NUM_FLUKES) return FITNESS_NEVER_REPRODUCE;
 
 		Vector3 finalPosition = GetPosition ();
 		float distance = (finalPosition - startPosition).sqrMagnitude;
@@ -161,7 +162,7 @@ public class ProunBuilder : MonoBehaviour {
 		float sizeFitness = (float)Math.Pow (nodes.Length, 3);
 		float muscleFitness = (float)Math.Pow (muscleDensity, 3);
 		float travelFitness = (distance / lifetime) * 50;
-		float stabilityFitness = flukes / 10f;
+		float stabilityFitness = (MAX_NUM_FLUKES - flukes) / (float) MAX_NUM_FLUKES;
 
 		float totalFitness = (sizeFitness * muscleFitness * travelFitness * stabilityFitness) / 1000f;
 
