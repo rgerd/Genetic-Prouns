@@ -169,6 +169,10 @@ public class ProunBuilder : MonoBehaviour {
 		return totalFitness;
 	}
 
+    public int GetNumFlukes() {
+        return flukes;
+    }
+
 	public int getLifetime() {
 		return lifetime;
 	}

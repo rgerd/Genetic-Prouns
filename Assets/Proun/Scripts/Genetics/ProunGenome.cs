@@ -111,6 +111,10 @@ public class ProunGenome : MonoBehaviour {
 		return body.Length;
 	}
 
+    public int GetMindSize() {
+        return mind.GetContents().Length;
+    }
+
 	public bool IsSpawned() {
 		return spawned;
 	}
